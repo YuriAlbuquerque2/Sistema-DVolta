@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
+import 'package:sistema_dvolta/paginas/login/Login.dart';
+
 void main() {
-  runApp(const MyApp());
+  runApp(const Login());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({super.key, required String title});
 
   // This widget is the root of your application.
   @override
@@ -28,9 +30,9 @@ class MyApp extends StatelessWidget {
         //
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
-        colorScheme: .fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: .fromSeed(seedColor: const Color.fromARGB(255, 190, 21, 44)),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Feed'),
     );
   }
 }
@@ -104,7 +106,7 @@ class _MyHomePageState extends State<MyHomePage> {
           // wireframe for each widget.
           mainAxisAlignment: .center,
           children: [
-            const Text('You have pushed the button this many times: a vida é uma simulação'),
+            const Text('Quantas vezes o Brasil ganhou a copa:'),
             Text(
               '$_counter',
               style: Theme.of(context).textTheme.headlineMedium,

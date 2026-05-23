@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
-import 'package:sistema_dvolta/paginas/criar_post/post.dart';
+import 'package:sistema_dvolta/paginas/login/Login.dart';
 
-class Login extends StatefulWidget {
-  const Login({super.key});
+class Post extends StatefulWidget {
+  const Post({super.key});
 
   @override
-  State<Login> createState() => _LoginState();
+  State<Post> createState() => _PostState();
 }
 
-class _LoginState extends State<Login> {
+class _PostState extends State<Post> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -21,14 +21,14 @@ class _LoginState extends State<Login> {
       home: Scaffold( 
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: const Text('Login'),
+          title: const Text('Post'),
         ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-              'Login',
+              'Post',
               style: TextStyle(
                 fontSize: 35,
                 color: const Color.fromARGB(255, 228, 142, 19),
@@ -95,14 +95,14 @@ class _LoginState extends State<Login> {
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => Post(),
+                              builder: (context) => Login(),
                           ),
                         );
                         },
                         
                         color: const Color.fromARGB(255, 16, 83, 56),
                         textColor: Colors.white,
-                        child: Text('Login'),
+                        child: Text('Post'),
                       ),
                     ),
                   ],
