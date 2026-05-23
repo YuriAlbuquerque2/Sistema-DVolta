@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
 import 'package:sistema_dvolta/paginas/login/Login.dart';
+import 'package:sistema_dvolta/paginas/criar_post/post.dart';
 
 void main() {
-  runApp(const Login());
+  runApp(const MyApp(title: 'Flutter Demo'));
 }
 
 class MyApp extends StatelessWidget {
@@ -30,7 +31,7 @@ class MyApp extends StatelessWidget {
         //
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
-        colorScheme: .fromSeed(seedColor: const Color.fromARGB(255, 190, 21, 44)),
+        colorScheme: .fromSeed(seedColor: const Color.fromARGB(255, 16, 83, 56)),
       ),
       home: const MyHomePage(title: 'Feed'),
     );
@@ -56,69 +57,108 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+    return MaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        
+        colorScheme: .fromSeed(seedColor: const Color.fromARGB(255, 32, 203, 26)),
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: .center,
-          children: [
-            const Text('Quantas vezes o Brasil ganhou a copa:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
+      home: Scaffold( 
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          title: const Text('Login'),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
-    );
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              'Login',
+              style: TextStyle(
+                fontSize: 35,
+                color: const Color.fromARGB(255, 228, 142, 19),
+                fontWeight: FontWeight.bold
+              ), //TextStyle
+            ), //Text
+            
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 30),
+              child: Form(
+                child: Column(
+                  children:[
+              
+                    SizedBox(height: 30), //SizedBox
+              
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      child: TextFormField(
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          labelText: 'Matrícula',
+                          hintText: 'Matrícula',
+                          prefixIcon: Icon(Icons.numbers),
+                          border: OutlineInputBorder(),
+                        ),//Decoration
+                        onChanged: (String value) {
+                                    
+                        }, //onChanged
+                        validator: (value) {
+                          return value!.isEmpty ? 'Por favor digite uma matrícula' : null;
+                        }, //Validator
+                                      
+                      ),
+                    ),//TextFormFild
+              
+                    SizedBox(height: 30, ),
+              
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      child: TextFormField(
+                        keyboardType: TextInputType.visiblePassword,
+                        decoration: InputDecoration(
+                          labelText: 'Senha',
+                          hintText: 'Senha',
+                          prefixIcon: Icon(Icons.key),
+                          border: OutlineInputBorder(),
+                        ),//Decoration
+                        onChanged: (String value) {
+                                    
+                        }, 
+                        validator: (value) {
+                          return value!.isEmpty ? 'Por favor digite uma senha' : null;
+                        }, //Validator
+                                      
+                      ),
+                    ),//TextField
+                    SizedBox(height: 30, ),
+
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 35),
+                      child: MaterialButton(
+                        minWidth: double.infinity,
+                        onPressed: () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Post(),
+                          ),
+                        );
+                        },
+                        
+                        color: const Color.fromARGB(255, 16, 83, 56),
+                        textColor: Colors.white,
+                        child: Text('Login'),
+                      ),
+                    ),
+                  ],
+                ),//columm
+              ),
+            ), //form
+          ], // children
+        ) //collumn
+      ), // Scaffold
+    ); //materielApp
   }
 }
