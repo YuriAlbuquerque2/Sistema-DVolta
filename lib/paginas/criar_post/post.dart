@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:sistema_dvolta/paginas/login/Login.dart';
+import 'package:sistema_dvolta/paginas/login/main.dart';
 
 class Post extends StatefulWidget {
   const Post({super.key});
@@ -95,7 +95,7 @@ class _PostState extends State<Post> {
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => Login(),
+                              builder: (context) => Tela1Login(),
                           ),
                         );
                         },
