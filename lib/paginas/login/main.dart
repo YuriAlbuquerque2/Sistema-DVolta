@@ -40,7 +40,7 @@ class _Tela1Login extends State<Tela1Login> {
           width: 412,
           height: 914,
           clipBehavior: Clip.antiAlias,
-          decoration: BoxDecoration(color: Colors.white),
+          decoration: BoxDecoration(color: Color.fromARGB(255, 46, 37, 58)),
           child: Stack(
             children: [
               
@@ -60,7 +60,7 @@ class _Tela1Login extends State<Tela1Login> {
                     shape: RoundedRectangleBorder(
                       side: BorderSide(
                         width: 1,
-                        color: const Color(0xFFBFB9B9),
+                        color: const Color.fromARGB(255, 240, 232, 213),
                       ),
                       borderRadius: BorderRadius.circular(15),
                     ),
@@ -72,12 +72,8 @@ class _Tela1Login extends State<Tela1Login> {
                 left: 85,
                 top: 651,
                 child: Material(
-                  color: const Color.fromARGB(255, 255, 255, 255),                  
+                  color: const Color.fromARGB(255, 240, 232, 213),                  
                   shape: RoundedRectangleBorder(
-                      side: BorderSide(
-                        width: 1,
-                        color: const Color(0xFF115339),
-                      ),
                       borderRadius: BorderRadius.circular(10),
                       ),
                   child: InkWell(
@@ -88,7 +84,7 @@ class _Tela1Login extends State<Tela1Login> {
                       );
                     },
                     highlightColor: Colors.transparent,                    
-                     child: Container(
+                     child: SizedBox(
                        width: 242,
                        height: 47,                     
                       child: Center(
@@ -96,7 +92,7 @@ class _Tela1Login extends State<Tela1Login> {
                         'Criar conta',
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          color: const Color(0xFF115339),
+                          color: const Color.fromARGB(255, 46, 37, 58),
                           fontSize: 28,
                           fontFamily: 'Inter',
                           fontWeight: FontWeight.w500,
@@ -115,7 +111,7 @@ class _Tela1Login extends State<Tela1Login> {
                 left: 85,
                 top: 584,
                 child: Material(
-                  color: const Color(0xFF115339),
+                  color: const Color.fromARGB(255, 240, 232, 213),
                   borderRadius: BorderRadius.circular(10),
                   child: InkWell(
                     onTap: () {
@@ -125,7 +121,7 @@ class _Tela1Login extends State<Tela1Login> {
                       );
                     },
                     highlightColor: Colors.transparent,                 
-                     child: Container(
+                     child: SizedBox(
                        width: 242,
                        height: 47,                     
                       child: Center(
@@ -133,7 +129,7 @@ class _Tela1Login extends State<Tela1Login> {
                         'Entrar',
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          color: Colors.white,
+                          color: Color.fromARGB(255, 46, 37, 58),
                           fontSize: 28,
                           fontFamily: 'Inter',
                           fontWeight: FontWeight.w500,
@@ -158,7 +154,7 @@ class _Tela1Login extends State<Tela1Login> {
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       decoration: TextDecoration.none,
-                      color: Colors.black,
+                      color: Color.fromARGB(255, 240, 232, 213),
                       fontSize: 20,
                       fontFamily: 'Inter',
                       fontWeight: FontWeight.w500,
@@ -174,7 +170,7 @@ class _Tela1Login extends State<Tela1Login> {
                 top: 411,
                 child: Material(
                   color: Colors.transparent,
-                child: Container(
+                child: SizedBox(
                   width: 242,
                   height: 50,
                   child: TextFormField(
@@ -183,7 +179,7 @@ class _Tela1Login extends State<Tela1Login> {
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20),
                       borderSide: BorderSide(
-                        color: const Color(0xFFC0B9B9),
+                        color: const Color.fromARGB(255, 240, 232, 213),
                       ),
                     ),
 
@@ -233,7 +229,7 @@ class _Tela1Login extends State<Tela1Login> {
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       decoration: TextDecoration.none,
-                      color: Colors.black,
+                      color: Color.fromARGB(255, 240, 232, 213),
                       fontSize: 20,
                       fontFamily: 'Inter',
                       fontWeight: FontWeight.w500,
@@ -249,7 +245,7 @@ class _Tela1Login extends State<Tela1Login> {
                 top: 513,
                 child: Material(
                   color: Colors.transparent,
-                  child: Container(
+                  child: SizedBox(
                     width: 242,
                     height: 50,
                     child: TextFormField(
@@ -258,7 +254,7 @@ class _Tela1Login extends State<Tela1Login> {
                       enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20),
                       borderSide: BorderSide(
-                        color: const Color(0xFFC0B9B9),
+                        color: const Color.fromARGB(255, 240, 232, 213),
                       ),
                     ),
 
