@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:sistema_dvolta/paginas/criar_post/post.dart';
+
 class Tela2Cadastro extends StatefulWidget {
   const Tela2Cadastro({super.key});
 
@@ -14,13 +16,14 @@ class _Tela2Cadastro extends State<Tela2Cadastro> {
       home: Container (
           width: double.infinity,
                   height: double.infinity,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     image: DecorationImage(
                       image: AssetImage('lib/ui/imagens/Fundo.png'),
                       fit:BoxFit.cover, 
                     ),
                   ),
         child: Scaffold(
+          backgroundColor: Colors.transparent,
           body: SingleChildScrollView(
             child: Column(
               children: [
@@ -51,7 +54,7 @@ class _Tela2Cadastro extends State<Tela2Cadastro> {
                     shape: RoundedRectangleBorder(
                       side: BorderSide(
                         width: 1,
-                        color: Color.fromARGB(255, 240, 232, 213),
+                        color: const Color(0xFFF0E8D5),
                       ),
                       borderRadius: BorderRadius.circular(15),
                     ),
@@ -239,21 +242,54 @@ class _Tela2Cadastro extends State<Tela2Cadastro> {
                 ),
               ),
               Positioned(
-                left: 131,
-                top: 628,
-                child: SizedBox(
-                  width: 144,
-                  height: 26,
-                  child: Text(
-                    'Criar conta',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: const Color(0xFF2E253A),
-                      fontSize: 28,
-                      fontFamily: 'Inter',
-                      fontWeight: FontWeight.w500,
-                      height: 1.40,
-                      letterSpacing: -0.56,
+                left: 82,
+                top: 617,
+                // child: SizedBox(
+                //   width: 144,
+                //   height: 26,
+                //   child: Text(
+                //     'Criar conta',
+                //     textAlign: TextAlign.center,
+                //     style: TextStyle(
+                //       color: const Color(0xFF2E253A),
+                //       fontSize: 28,
+                //       fontFamily: 'Inter',
+                //       fontWeight: FontWeight.w500,
+                //       height: 1.40,
+                //       letterSpacing: -0.56,
+                //     ),
+                //   ),
+                // ),
+                child: Material(
+                  color: const Color(0xFFF0E8D5),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      ),
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => Post()),
+                      );
+                    },
+                    highlightColor: Colors.transparent,                    
+                     child: SizedBox(
+                       width: 242,
+                       height: 47,                     
+                      child: Center(
+                      child: Text(
+                        'Criar conta',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: const Color.fromARGB(255, 46, 37, 58),
+                          fontSize: 28,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w500,
+                          height: 1.40,
+                          letterSpacing: -0.56,
+                        ),
+                      ),
+                    ),
                     ),
                   ),
                 ),
