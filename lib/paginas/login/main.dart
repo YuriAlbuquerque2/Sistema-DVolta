@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:sistema_dvolta/paginas/login/cadastro/cadastro.dart';
 import 'package:sistema_dvolta/paginas/criar_post/post.dart';
-
 void main() {
   runApp(const FigmaToCodeApp());
 }
@@ -33,14 +33,27 @@ class _Tela1Login extends State<Tela1Login> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold (
-        body: Column (
+      home: Container(
+        width: double.infinity,
+        height: double.infinity,
+
+        decoration: const BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage('lib/ui/imagens/Fundo.png'),
+          fit: BoxFit.cover, 
+        ),
+      ),
+
+      child: Scaffold (
+        backgroundColor: Colors.transparent,
+      body: SingleChildScrollView(
+        child: Column (
       children: [
         Container(
           width: 412,
           height: 914,
           clipBehavior: Clip.antiAlias,
-          decoration: BoxDecoration(color: Color.fromARGB(255, 46, 37, 58)),
+          decoration: BoxDecoration(color: Colors.transparent),
           child: Stack(
             children: [
               
@@ -80,7 +93,7 @@ class _Tela1Login extends State<Tela1Login> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => Post()),
+                        MaterialPageRoute(builder: (context) => Tela2Cadastro()),
                       );
                     },
                     highlightColor: Colors.transparent,                    
@@ -174,14 +187,17 @@ class _Tela1Login extends State<Tela1Login> {
                   width: 242,
                   height: 50,
                   child: TextFormField(
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20),
-                      borderSide: BorderSide(
-                        color: const Color.fromARGB(255, 240, 232, 213),
-                      ),
+                    style: TextStyle(
+                      color: Color.fromARGB(255, 240, 232, 213),
                     ),
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20),
+                        borderSide: BorderSide(
+                          color: const Color.fromARGB(255, 240, 232, 213),
+                        ),
+                      ),
 
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20),
@@ -249,14 +265,17 @@ class _Tela1Login extends State<Tela1Login> {
                     width: 242,
                     height: 50,
                     child: TextFormField(
-                    keyboardType: TextInputType.visiblePassword,
-                    decoration: InputDecoration(
-                      enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20),
-                      borderSide: BorderSide(
-                        color: const Color.fromARGB(255, 240, 232, 213),
-                      ),
+                      style: TextStyle(
+                      color: Color.fromARGB(255, 240, 232, 213),
                     ),
+                      keyboardType: TextInputType.visiblePassword,
+                      decoration: InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20),
+                        borderSide: BorderSide(
+                          color: const Color.fromARGB(255, 240, 232, 213),
+                        ),
+                      ),
 
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20),
@@ -376,12 +395,14 @@ class _Tela1Login extends State<Tela1Login> {
               //     ),
               //   ),
               // ),
-            ],
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
       ),
       ),
+      ),
+    ),
     );
   }
 }
