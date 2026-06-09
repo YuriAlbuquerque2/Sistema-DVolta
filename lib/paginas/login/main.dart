@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:sistema_dvolta/paginas/home/perfil/editar_informacoes/editar_informacoes.dart';
 import 'package:sistema_dvolta/paginas/login/cadastro/cadastro.dart';
 import 'package:sistema_dvolta/paginas/criar_post/post.dart';
 void main() {
@@ -130,7 +131,7 @@ class _Tela1Login extends State<Tela1Login> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => Post()),
+                        MaterialPageRoute(builder: (context) => Tela7EditarInformaEs()),
                       );
                     },
                     highlightColor: Colors.transparent,                 
@@ -202,7 +203,7 @@ class _Tela1Login extends State<Tela1Login> {
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20),
                       borderSide: BorderSide(
-                        color: const Color.fromARGB(255, 0, 0, 0),
+                        color: const Color.fromARGB(255, 80, 61, 104),
                       ),
                     ),
 
@@ -221,6 +222,9 @@ class _Tela1Login extends State<Tela1Login> {
                     ),
 
                     hintText: 'ex.: juninho247@gmail.com',
+                    hintStyle: TextStyle(
+                      color: Color.fromARGB(191, 240, 232, 213),
+                    ),
                     prefixIcon: Icon(Icons.email),
                   ),
                   onChanged: (String value) {
@@ -280,7 +284,7 @@ class _Tela1Login extends State<Tela1Login> {
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20),
                       borderSide: BorderSide(
-                        color: const Color.fromARGB(255, 0, 0, 0),
+                        color: const Color.fromARGB(255, 80, 61, 104),
                       ),
                     ),
 
@@ -312,89 +316,6 @@ class _Tela1Login extends State<Tela1Login> {
                 ),
                 ),
               ),
-             
-              // Positioned(
-              //   left: 85,
-              //   top: 513,
-              //   child: Container( //campo de senha
-              //     width: 242,
-              //     height: 31,
-              //     decoration: ShapeDecoration(
-              //       color: Colors.white.withValues(alpha: 0),
-              //       shape: RoundedRectangleBorder(
-              //         side: BorderSide(
-              //           width: 1,
-              //           color: const Color(0xFFC0B9B9),
-              //         ),
-              //         borderRadius: BorderRadius.circular(6),
-              //       ),
-              //     ),
-
-              //     child:TextFormField(
-                   
-              //     ),
-
-              //   ),
-              // ),
-
-              
-
-              // Positioned( //campo de email
-              //   left: 85,
-              //   top: 411,
-              //   child: Container(
-              //     width: 242,
-              //     height: 31,
-              //     decoration: ShapeDecoration(
-              //       color: Colors.white.withValues(alpha: 0),
-              //       shape: RoundedRectangleBorder(
-              //         side: BorderSide(
-              //           width: 1,
-              //           color: const Color(0xFFC0B9B9),
-              //         ),
-              //         borderRadius: BorderRadius.circular(6),
-              //       ),
-              //     ),
-              //   ),
-              // ),
-
-              // Positioned(
-              //   left: 91,
-              //   top: 105,
-              //   child: SizedBox(
-              //     width: 230,
-              //     height: 64,
-              //     child: Text.rich(
-              //       TextSpan(
-              //         children: [
-              //           TextSpan(
-              //             text: 'D',
-              //             style: TextStyle(
-              //               color: const Color(0xFFE48D14),
-              //               fontSize: 64,
-              //               fontFamily: 'Inter',
-              //               fontWeight: FontWeight.w600,
-              //               height: 1.40,
-              //               letterSpacing: -1.28,
-              //             ),
-              //           ),
-              //           TextSpan(
-              //             text: 'Volta',
-              //             style: TextStyle(
-              //               color: const Color(0xFF115339),
-              //               fontSize: 64,
-              //               fontFamily: 'Inter',
-              //               fontWeight: FontWeight.w600,
-              //               height: 1.40,
-              //               letterSpacing: -1.28,
-              //             ),
-              //           ),
-              //         ],
-              //       ),
-              //       textAlign: TextAlign.center,
-              //     ),
-              //   ),
-              // ),
               ],
             ),
           ),
