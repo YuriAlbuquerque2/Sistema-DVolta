@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:sistema_dvolta/paginas/login/main.dart';
 
@@ -10,6 +11,12 @@ class Tela2Cadastro extends StatefulWidget {
 }
 
 class _Tela2Cadastro extends State<Tela2Cadastro> {
+
+  final TextEditingController nomeController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController senhaController = TextEditingController();
+  final TextEditingController confirmarSenhaController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
       return Container (
@@ -82,6 +89,8 @@ class _Tela2Cadastro extends State<Tela2Cadastro> {
                   width: 242,
                   height: 50,
                   child: TextFormField(
+                    controller: confirmarSenhaController,
+                    obscureText: true,
                     style: TextStyle(
                       color: const Color(0xFFF0E8D5),
                     ),
@@ -163,6 +172,8 @@ class _Tela2Cadastro extends State<Tela2Cadastro> {
                   width: 242,
                   height: 50,
                   child: TextFormField(
+                    controller: senhaController,
+                    obscureText: true,
                     style: TextStyle(
                       color: const Color(0xFFF0E8D5),
                     ),
@@ -236,6 +247,7 @@ class _Tela2Cadastro extends State<Tela2Cadastro> {
                   width: 242,
                   height: 50,
                   child: TextFormField(
+                    controller: emailController,
                     style: TextStyle(
                       color: const Color(0xFFF0E8D5),
                     ),
@@ -278,9 +290,6 @@ class _Tela2Cadastro extends State<Tela2Cadastro> {
                     onChanged: (String value) {
 
                   },
-                  validator: (value) {
-                    return value!.isEmpty ? 'Por favor digite um email válido' : null;
-                  },
                   ),
                 ),
                 ),
@@ -315,6 +324,7 @@ class _Tela2Cadastro extends State<Tela2Cadastro> {
                   width: 242,
                   height: 50,
                   child: TextFormField(
+                    controller: nomeController,
                     style: TextStyle(
                       color: const Color(0xFFF0E8D5),
                     ),
@@ -375,12 +385,78 @@ class _Tela2Cadastro extends State<Tela2Cadastro> {
                 left: 87,
                 top: 711,
                 child: Material(
+                  
                   color: const Color(0xFFF0E8D5),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                       ),
                   child: InkWell(
-                    onTap: () {
+                    
+                    onTap: () async {
+                      if (nomeController.text.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("Nome não pode ser vazio!"),
+                        ),
+                      );
+
+                      return;
+                    }
+
+                      if (emailController.text.isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("Email não pode ser vazio!"),
+                        ),
+                      );
+
+                      return;
+                      }
+
+                      if (!emailController.text.contains('@')) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("Digite um email válido!"),
+                        ),
+                      );
+
+                      return;
+                      }
+
+                      if (senhaController.text.length < 8) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("A senha precisa de no mínimo 8 caracteres."),
+                        ),
+                      );
+
+                      return;
+                    }
+
+                    if (senhaController.text != confirmarSenhaController.text) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("As senhas não coincidem."),
+                        ),
+                      );
+
+                      return;
+                    }
+
+                      final response = await supabase.auth.signUp(
+                      email: emailController.text.trim(),
+                      password: senhaController.text,
+                    );
+
+                    final userId = response.user!.id;
+
+                        await Supabase.instance.client
+                              .from('usuarios')
+                              .insert({
+                                'id': userId,
+                                'nome': nomeController.text,
+                              });
+                       
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => Tela1Login()),

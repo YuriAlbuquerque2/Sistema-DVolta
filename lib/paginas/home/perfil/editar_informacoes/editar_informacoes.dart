@@ -47,7 +47,7 @@ class _Tela7EditarInformaEsState extends State<Tela7EditarInformaEs> {
       children: [
         Container( // Fundo da tela
           width: 412,
-          height: 917,
+          height: 914,
           clipBehavior: Clip.antiAlias,
           decoration: BoxDecoration(
             image: DecorationImage(
