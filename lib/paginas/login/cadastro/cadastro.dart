@@ -31,7 +31,7 @@ class _Tela2Cadastro extends State<Tela2Cadastro> {
         child: Scaffold(
           appBar: AppBar(
           backgroundColor: Colors.transparent,
-          elevation: 77,
+          elevation: 0,
           leading: IconButton(
             onPressed: () {
               Navigator.of(context).pop();

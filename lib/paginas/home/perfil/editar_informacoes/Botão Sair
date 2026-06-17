@@ -1,0 +1,69 @@
+import 'package:flutter/material.dart';
+
+class BotaoSair extends StatelessWidget {
+  const BotaoSair({super.key});
+
+  void _confirmarSaida(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Sair'),
+        content: const Text('Deseja sair da sua conta?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancelar'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context); // fecha o dialog
+
+              // TODO: limpar token/sessão aqui
+              // Ex: await AuthService.logout();
+
+              // Vai para login removendo todo o histórico de navegação
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                '/login',
+                (route) => false,
+              );
+            },
+            child: const Text(
+              'Sair',
+              style: TextStyle(color: Colors.red),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () => _confirmarSaida(context),
+      borderRadius: BorderRadius.circular(8),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 19),
+        child: Row(
+          children: const [
+            Icon(Icons.logout, color: Color(0xFFF0E8D5), size: 24),
+            SizedBox(width: 12),
+            Text(
+              'Sair',
+              style: TextStyle(
+                color: Color(0xFFF0E8D5),
+                fontSize: 16,
+                fontFamily: 'Inter',
+                fontWeight: FontWeight.w600,
+                letterSpacing: -0.32,
+              ),
+            ),
+            Spacer(),
+            Icon(Icons.chevron_right, color: Color(0xFFF0E8D5), size: 20),
+          ],
+        ),
+      ),
+    );
+  }
+}

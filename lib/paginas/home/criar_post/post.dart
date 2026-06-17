@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-import 'package:sistema_dvolta/paginas/login/main.dart';
 import 'package:sistema_dvolta/paginas/home/home.dart';
 
 class Tela4CriarPost  extends StatefulWidget {
@@ -11,6 +11,10 @@ class Tela4CriarPost  extends StatefulWidget {
 }
 
 class _Tela4CriarPostState extends State<Tela4CriarPost> {
+  final supabase = Supabase.instance.client;
+  final TextEditingController tituloController = TextEditingController();
+  final TextEditingController descricaoController = TextEditingController();
+  final TextEditingController localController = TextEditingController();
 
   String tipoSelecionado = 'Achado';
 
@@ -140,7 +144,7 @@ class _Tela4CriarPostState extends State<Tela4CriarPost> {
                       SizedBox(height: 30), // espaçamento entre elementos
 
                       TextField( // Campo de título
-                        
+                        controller: tituloController,
                         style: TextStyle(
                           color: Color.fromARGB(255, 240, 232, 213),
                         ),
@@ -175,6 +179,7 @@ class _Tela4CriarPostState extends State<Tela4CriarPost> {
                         width: 336,
                         height: 168,
                         child: TextField( // Campo de descrição
+                          controller: descricaoController,
                           textAlignVertical: TextAlignVertical.top,
                           maxLines: null,
                           expands: true,
@@ -291,7 +296,7 @@ class _Tela4CriarPostState extends State<Tela4CriarPost> {
                       SizedBox(height: 10),
 
                       TextField( // Campo de localidade
-                        
+                        controller: localController,
                         style: TextStyle(
                           color: Color.fromARGB(255, 240, 232, 213),
                         ),
@@ -397,7 +402,45 @@ class _Tela4CriarPostState extends State<Tela4CriarPost> {
                       
                       Center(
                         child: ElevatedButton(
-                          onPressed: () {
+                          onPressed: () async {
+
+                            if (tituloController.text.trim().isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Digite um título"),
+                                ),
+                              );
+                              return;
+                            }
+
+                            if (descricaoController.text.trim().isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text("Digite uma descrição sobre o item que foi $tipoSelecionado"),
+                                ),
+                              );
+                              return;
+                            }
+
+                            if (localController.text.trim().isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text("Informe o local que o item foi $tipoSelecionado"),
+                                ),
+                              );
+                              return;
+                            }
+
+                            await supabase.from('post').insert({
+                              'titulo': tituloController.text.trim(),
+                              'descricao': descricaoController.text.trim(),
+                              'tipo_post': tipoSelecionado,
+                              'local': localController.text.trim(),
+                              'whatsapp': whatsapp,
+                              'telegram': telegram,
+                              'usuario_id': supabase.auth.currentUser!.id,
+                            });
+
                             Navigator.push(
                               context,
                               MaterialPageRoute(builder: (context) => Tela3Feed())

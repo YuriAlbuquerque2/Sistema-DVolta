@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
 import 'package:sistema_dvolta/paginas/home/perfil/editar_informacoes/editar_informacoes.dart';
 import 'package:sistema_dvolta/paginas/home/home.dart';
 import 'package:sistema_dvolta/paginas/login/cadastro/cadastro.dart';
@@ -14,7 +13,7 @@ void main() async {
     publishableKey: 'sb_publishable_JH0-ZIaUMexX6MmZm11OOw_vtKf1K-0',
   );
 
-  runApp(const FigmaToCodeApp());
+    runApp(const FigmaToCodeApp());
 }
 
 final supabase = Supabase.instance.client;
@@ -30,7 +29,9 @@ class FigmaToCodeApp extends StatelessWidget {
         colorScheme: .fromSeed(seedColor: const Color.fromARGB(255, 18, 32, 47))
 
         
-      ), home:const Tela1Login()
+      ), 
+      
+      home: supabase.auth.currentUser == null ? Tela1Login() : Tela3Feed(),
     );
   }
 }
@@ -43,6 +44,9 @@ class Tela1Login extends StatefulWidget {
 }
 
 class _Tela1Login extends State<Tela1Login> {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController senhaController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -133,41 +137,7 @@ class _Tela1Login extends State<Tela1Login> {
               ),
              
 
-              Positioned(   //botão de entrar
-                left: 85,
-                top: 584,
-                child: Material(
-                  color: const Color.fromARGB(255, 240, 232, 213),
-                  borderRadius: BorderRadius.circular(10),
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Tela3Feed()),
-                      );
-                    },
-                    highlightColor: Colors.transparent,                 
-                     child: SizedBox(
-                       width: 242,
-                       height: 47,                     
-                      child: Center(
-                      child: Text(
-                        'Entrar',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Color.fromARGB(255, 46, 37, 58),
-                          fontSize: 28,
-                          fontFamily: 'Inter',
-                          fontWeight: FontWeight.w500,
-                          height: 1.40,
-                          letterSpacing: -0.56,
-                        ),
-                      ),
-                    ),
-                    ),                    
-                  ),                  
-                ),
-              ),
+              
 
               Positioned(
                 left: 73,
@@ -200,6 +170,7 @@ class _Tela1Login extends State<Tela1Login> {
                   width: 242,
                   height: 50,
                   child: TextFormField(
+                    controller: emailController,
                     style: TextStyle(
                       color: Color.fromARGB(255, 240, 232, 213),
                     ),
@@ -281,6 +252,8 @@ class _Tela1Login extends State<Tela1Login> {
                     width: 242,
                     height: 50,
                     child: TextFormField(
+                      controller: senhaController,
+                        obscureText: true,
                       style: TextStyle(
                       color: Color.fromARGB(255, 240, 232, 213),
                     ),
@@ -328,6 +301,83 @@ class _Tela1Login extends State<Tela1Login> {
                 ),
                 ),
               ),
+
+              Positioned(   //botão de entrar
+                left: 85,
+                top: 584,
+                child: Material(
+                  color: const Color.fromARGB(255, 240, 232, 213),
+                  borderRadius: BorderRadius.circular(10),
+                  child: InkWell(
+                    onTap: () async {
+                      
+                       if (emailController.text.isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("Digite um email"),
+                          ),
+                        );
+                        return;
+                      }
+
+                      if (senhaController.text.isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("Digite uma senha"),
+                          ),
+                        );
+                        return;
+                      }
+
+                      try {
+
+                        await supabase.auth.signInWithPassword(
+                          email: emailController.text.trim(),
+                          password: senhaController.text,
+                        );
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Tela3Feed(),
+                          ),
+                        );
+
+                      } catch (e) {
+
+                        print(e);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("Email ou senha incorretos"),
+                          ),
+                        );
+
+                      }
+                    
+                    },
+                    highlightColor: Colors.transparent,                 
+                     child: SizedBox(
+                       width: 242,
+                       height: 47,                     
+                      child: Center(
+                      child: Text(
+                        'Entrar',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Color.fromARGB(255, 46, 37, 58),
+                          fontSize: 28,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w500,
+                          height: 1.40,
+                          letterSpacing: -0.56,
+                        ),
+                      ),
+                    ),
+                    ),                    
+                  ),                  
+                ),
+              ),
+
               ],
             ),
           ),
