@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class Tela7EditarInformaEs extends StatefulWidget {
   const Tela7EditarInformaEs({super.key});
@@ -8,6 +11,90 @@ class Tela7EditarInformaEs extends StatefulWidget {
 }
 
 class _Tela7EditarInformaEsState extends State<Tela7EditarInformaEs> {
+  final supabase = Supabase.instance.client;
+
+  File? fotoSelecionada;
+
+  String? fotoPerfilUrl;
+
+  Future<void> selecionarFoto() async {
+
+  final imagem = await ImagePicker().pickImage(
+    source: ImageSource.gallery,
+  );
+
+    if (imagem != null) {
+      setState(() {
+        fotoSelecionada = File(imagem.path);
+      });
+    }
+  }
+
+  Future<String> uploadFotoPerfil() async {
+
+    final userId = supabase.auth.currentUser!.id;
+
+    final caminho = '$userId.jpg';
+
+    await supabase.storage
+        .from('avatars')
+        .upload(
+          caminho,
+          fotoSelecionada!,
+          fileOptions: const FileOptions(
+            upsert: true,
+          ),
+        );
+
+    return supabase.storage
+        .from('avatars')
+        .getPublicUrl(caminho);
+  }
+
+  Future<void> salvarFotoPerfil() async {
+
+    if (fotoSelecionada == null) {
+      return;
+    }
+
+    final url = await uploadFotoPerfil();
+
+    await supabase
+        .from('usuarios')
+        .update({
+          'foto_perfil': url,
+        })
+        .eq(
+          'id',
+          supabase.auth.currentUser!.id,
+        );
+  }
+
+  Future<void> carregarFotoPerfil() async {
+
+    final dados = await supabase
+        .from('usuarios')
+        .select('foto_perfil')
+        .eq(
+          'id',
+          supabase.auth.currentUser!.id,
+        )
+        .single();
+
+    setState(() {
+      fotoPerfilUrl = dados['foto_perfil'];
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    carregarFotoPerfil();
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -23,7 +110,7 @@ class _Tela7EditarInformaEsState extends State<Tela7EditarInformaEs> {
         backgroundColor: Colors.transparent,
         appBar: AppBar(
           backgroundColor: const Color(0xFF503D68),
-          elevation: 77,
+          elevation: 0,
           title: const Text('Minhas informações'),
           centerTitle: true,
           titleTextStyle: const TextStyle(
@@ -51,19 +138,46 @@ class _Tela7EditarInformaEsState extends State<Tela7EditarInformaEs> {
                   children: [
 
                     // Avatar
-                    Container(
-                      width: 203,
-                      height: 193,
-                      decoration: const ShapeDecoration(
-                        color: Color(0xFFEADDFF),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(100)),
+                    GestureDetector(
+                      onTap: selecionarFoto,
+
+                      child: Container(
+                        width: 203,
+                        height: 193,
+                        decoration: const ShapeDecoration(
+                          color: Color(0xFFEADDFF),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(100),
+                            ),
+                          ),
                         ),
-                      ),
-                      child: const Icon(
-                        Icons.person,
-                        size: 80,
-                        color: Color(0xFF503D68),
+
+                        child: fotoSelecionada != null
+
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(100),
+                              child: Image.file(
+                                fotoSelecionada!,
+                                fit: BoxFit.cover,
+                              ),
+                            )
+
+                          : fotoPerfilUrl != null
+
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(100),
+                              child: Image.network(
+                                fotoPerfilUrl!,
+                                fit: BoxFit.cover,
+                              ),
+                            )
+
+                          : const Icon(
+                              Icons.person,
+                              size: 80,
+                              color: Color(0xFF503D68),
+                            ),
                       ),
                     ),
 
@@ -96,7 +210,16 @@ class _Tela7EditarInformaEsState extends State<Tela7EditarInformaEs> {
                       width: 286,
                       height: 73,
                       child: ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
+                          await salvarFotoPerfil();
+                          await carregarFotoPerfil();
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Foto atualizada'),
+                            ),
+                          );
+
                           // TODO: lógica de atualizar
                         },
                         style: ElevatedButton.styleFrom(

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 
 import 'package:sistema_dvolta/paginas/home/home.dart';
 
@@ -15,6 +17,32 @@ class _Tela4CriarPostState extends State<Tela4CriarPost> {
   final TextEditingController tituloController = TextEditingController();
   final TextEditingController descricaoController = TextEditingController();
   final TextEditingController localController = TextEditingController();
+
+  final ImagePicker picker = ImagePicker();
+
+  List<File> imagensSelecionadas = [];
+
+  Future<void> selecionarImagem() async {
+
+    if (imagensSelecionadas.length >= 4) {
+      return;
+    }
+
+    final XFile? imagem =
+        await picker.pickImage(
+          source: ImageSource.gallery,
+        );
+
+    if (imagem == null) return;
+
+    setState(() {
+
+      imagensSelecionadas.add(
+        File(imagem.path),
+      );
+
+    });
+  }
 
   String tipoSelecionado = 'Achado';
 
@@ -71,11 +99,13 @@ class _Tela4CriarPostState extends State<Tela4CriarPost> {
               ),
 
             Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 38), // Marca o início do posicionamento dos elementos
+                padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 40), // Marca o início do posicionamento dos elementos
                 child: SingleChildScrollView(
                   child: Column( //Se usa Column para colocar coisas uma em baixo da outra
                     crossAxisAlignment: CrossAxisAlignment.start, // alinha "a esquerda"
                     children: [
+
+                      SizedBox(height: 90), // espaçamento entre elementos
 
                       Text( // Texto "Tipo de post"
                         "Tipo de post",
@@ -245,23 +275,73 @@ class _Tela4CriarPostState extends State<Tela4CriarPost> {
 
                               const SizedBox(height: 15),
 
-                              Container( // Quadrado de adição de imagem
-                                width: 70,
-                                height: 70,
-                                decoration: ShapeDecoration(
-                                  shape: RoundedRectangleBorder(
-                                    side: BorderSide(
-                                    width: 1,
-                                    color: const Color.fromARGB(255, 0, 0, 0),
-                                    ),
+                              Positioned(
+                                left: 10,
+                                top: 35,
+                                child: SizedBox(
+                                  width: 310,
+                                  height: 71,
+                                  child: Row(
+                                    children: [
+
+                                      ...imagensSelecionadas.map(
+                                        (imagem) => Container(
+                                          margin: EdgeInsets.only(right: 8),
+                                          width: 68,
+                                          height: 70,
+
+                                          decoration: BoxDecoration(
+                                            border: Border.all(
+                                              color: Colors.black,
+                                            ),
+                                          ),
+
+                                          child: Image.file(
+                                            imagem,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      ),
+
+                                      if (imagensSelecionadas.length < 4)
+
+                                        Container(
+                                          width: 68,
+                                          height: 70,
+
+                                          decoration: BoxDecoration(
+                                            border: Border.all(
+                                              color: Colors.black,
+                                            ),
+                                          ),
+
+                                          child: IconButton(
+                                            onPressed: selecionarImagem,
+                                            icon: Icon(Icons.add),
+                                          ),
+                                        ),
+                                    ],
                                   ),
                                 ),
-                                child: IconButton(
-                                  onPressed: () {},
-                                  icon: Icon(Icons.add),
-                                  color: Colors.black,
-                                ),
                               ),
+
+                              // Container( // Quadrado de adição de imagem
+                              //   width: 70,
+                              //   height: 70,
+                              //   decoration: ShapeDecoration(
+                              //     shape: RoundedRectangleBorder(
+                              //       side: BorderSide(
+                              //       width: 1,
+                              //       color: const Color.fromARGB(255, 0, 0, 0),
+                              //       ),
+                              //     ),
+                              //   ),
+                              //   child: IconButton(
+                              //     onPressed: () {},
+                              //     icon: Icon(Icons.add),
+                              //     color: Colors.black,
+                              //   ),
+                              // ),
 
                               SizedBox(height: 10),
 

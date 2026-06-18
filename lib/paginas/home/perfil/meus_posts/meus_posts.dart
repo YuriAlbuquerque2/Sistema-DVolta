@@ -18,7 +18,7 @@ class _Tela6meuspostState extends State<Tela6meuspost> {
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Color.fromARGB(255, 80, 61, 104),
-        title: const Text('Post'),
+        title: const Text('Meus Posts'),
         elevation: 0,
         centerTitle: true,
         titleTextStyle: TextStyle(
@@ -57,8 +57,4 @@ class _Tela6meuspostState extends State<Tela6meuspost> {
     );
 
   }
-
-
-
-  
 }

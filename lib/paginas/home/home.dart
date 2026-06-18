@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sistema_dvolta/paginas/login/main.dart';
 import 'package:sistema_dvolta/paginas/home/criar_post/post.dart';
+import 'package:sistema_dvolta/paginas/home/perfil/perfil.dart';
+import 'package:sistema_dvolta/paginas/home/perfil/meus_posts/meus_posts.dart';
 import 'package:sistema_dvolta/paginas/home/perfil/editar_informacoes/editar_informacoes.dart';
 import 'package:sistema_dvolta/ui/widgets/search.dart';
 
@@ -29,10 +31,12 @@ class _Tela3FeedState extends State<Tela3Feed> {
   void initState() {
     super.initState();
     filteredResults = List.from(searchResults);
+    }
 
     void _filterSearchResults(String query) {
       setState(() {
         searchQuery = query;
+        myFilterItems();
         filteredResults = searchResults
             .where((result) => result.toLowerCase().contains(query.toLowerCase()))
             .toList();
@@ -48,8 +52,6 @@ class _Tela3FeedState extends State<Tela3Feed> {
               (result) => result.toLowerCase().contains(searchQuery.toLowerCase()))
           .toList();
     }
-  }
- 
   }
   @override
   Widget build(BuildContext context) {
@@ -70,7 +72,7 @@ class _Tela3FeedState extends State<Tela3Feed> {
             ),
             child: TextField(
               controller: _searchController,
-              //onChanged: _filterSearchResults,
+              onChanged: _filterSearchResults,
               decoration: InputDecoration(
                 hintText: 'Pesquisar...',
                 hintStyle: TextStyle(color: Color.fromARGB(255, 240, 232, 213)),
@@ -110,7 +112,7 @@ class _Tela3FeedState extends State<Tela3Feed> {
                   isSearchClicked = !isSearchClicked;
                   if (!isSearchClicked) {
                     _searchController.clear();
-                    //myFilterItems();
+                    myFilterItems();
                   }
                 });
               },
@@ -200,7 +202,10 @@ class _Tela3FeedState extends State<Tela3Feed> {
             color: Color.fromARGB(255, 240, 232, 213)
              ),
                 onTap: () {
-                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Tela6meuspost()),
+                  );
                 },
               ),
               ListTile(
@@ -211,7 +216,10 @@ class _Tela3FeedState extends State<Tela3Feed> {
             color: Color.fromARGB(255, 240, 232, 213)
              ),
                 onTap: () {
-                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Tela5Perfil()),
+                  );
                 },
               ),
               ListTile(
