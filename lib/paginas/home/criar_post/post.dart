@@ -44,6 +44,34 @@ class _Tela4CriarPostState extends State<Tela4CriarPost> {
     });
   }
 
+  Future<List<String>> uploadImagensPost() async {
+
+    List<String> urls = [];
+
+    for (int i = 0; i < imagensSelecionadas.length; i++) {
+
+      final arquivo = imagensSelecionadas[i];
+
+      final nomeArquivo =
+        '${DateTime.now().millisecondsSinceEpoch}_$i.jpg';
+
+      await supabase.storage
+        .from('posts')
+        .upload(
+          nomeArquivo,
+          arquivo,
+        );
+
+      final url = supabase.storage
+        .from('posts')
+        .getPublicUrl(nomeArquivo);
+
+      urls.add(url);
+    }
+
+    return urls;
+  }
+
   String tipoSelecionado = 'Achado';
 
   final List<String> tipos = [
@@ -317,7 +345,7 @@ class _Tela4CriarPostState extends State<Tela4CriarPost> {
 
                                           child: IconButton(
                                             onPressed: selecionarImagem,
-                                            icon: Icon(Icons.add),
+                                            icon: Icon(Icons.add, color: Colors.black),
                                           ),
                                         ),
                                     ],
@@ -325,23 +353,6 @@ class _Tela4CriarPostState extends State<Tela4CriarPost> {
                                 ),
                               ),
 
-                              // Container( // Quadrado de adição de imagem
-                              //   width: 70,
-                              //   height: 70,
-                              //   decoration: ShapeDecoration(
-                              //     shape: RoundedRectangleBorder(
-                              //       side: BorderSide(
-                              //       width: 1,
-                              //       color: const Color.fromARGB(255, 0, 0, 0),
-                              //       ),
-                              //     ),
-                              //   ),
-                              //   child: IconButton(
-                              //     onPressed: () {},
-                              //     icon: Icon(Icons.add),
-                              //     color: Colors.black,
-                              //   ),
-                              // ),
 
                               SizedBox(height: 10),
 
@@ -511,15 +522,45 @@ class _Tela4CriarPostState extends State<Tela4CriarPost> {
                               return;
                             }
 
-                            await supabase.from('post').insert({
-                              'titulo': tituloController.text.trim(),
-                              'descricao': descricaoController.text.trim(),
-                              'tipo_post': tipoSelecionado,
-                              'local': localController.text.trim(),
-                              'whatsapp': whatsapp,
-                              'telegram': telegram,
-                              'usuario_id': supabase.auth.currentUser!.id,
-                            });
+                            try {
+                              final postCriado =
+                                await supabase
+                                  .from('posts')
+                                  .insert({
+                                    'titulo': tituloController.text,
+                                    'descricao': descricaoController.text,
+                                    'tipo_post': tipoSelecionado,
+                                    'local': localController.text,
+                                    'whatsapp': whatsapp,
+                                    'telegram': telegram,
+                                    'usuario_id':
+                                        supabase.auth.currentUser!.id,
+                                  })
+                                  .select()
+                                  .single();
+
+                                  final postId = postCriado['id'];
+
+                                  final urls =
+                                    await uploadImagensPost();
+
+                                    for (int i = 0; i < urls.length; i++) {
+
+                                      await supabase
+                                          .from('post_imagens')
+                                          .insert({
+                                            'post_id': postId,
+                                            'url': urls[i],
+                                            'ordem': i + 1,
+                                          });
+                                    }
+                              } catch (e) {
+                                  print(e);
+                                }
+
+                                print(supabase.auth.currentUser?.id);
+
+                                
 
                             Navigator.push(
                               context,

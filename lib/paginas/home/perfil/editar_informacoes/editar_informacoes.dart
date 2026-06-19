@@ -12,6 +12,53 @@ class Tela7EditarInformaEs extends StatefulWidget {
 
 class _Tela7EditarInformaEsState extends State<Tela7EditarInformaEs> {
   final supabase = Supabase.instance.client;
+  final TextEditingController nomeController = TextEditingController();
+  //final TextEditingController emailController = TextEditingController();
+  final TextEditingController telefoneController = TextEditingController();
+
+  bool carregando = false;
+
+  Future<void> _atualizarDados() async {
+    setState(() => carregando = true);
+
+    try {
+      // Pega o ID do usuário atualmente logado no Supabase
+      final usuarioId = supabase.auth.currentUser?.id;
+
+      if (usuarioId == null) {
+        throw 'Usuário não autenticado!';
+      }
+
+      // Envia a atualização com os 3 campos
+      await supabase
+          .from('usuarios') // Substitua pelo nome da sua tabela
+          .update({
+            'nome': nomeController.text.trim(),
+            //'email': emailController.text.trim(),
+            'telefone': telefoneController.text.trim(),
+          })
+          .eq('id', usuarioId); // Atualiza apenas a linha deste usuário
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Perfil atualizado com sucesso!')),
+      );
+    } catch (erro) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erro ao salvar: $erro')),
+      );
+    } finally {
+      setState(() => carregando = false);
+    }
+  }
+
+  @override
+  void dispose() {
+    // Limpa os controladores quando a tela for fechada
+    nomeController.dispose();
+    //emailController.dispose();
+    telefoneController.dispose();
+    super.dispose();
+  }
 
   File? fotoSelecionada;
 
@@ -185,6 +232,7 @@ class _Tela7EditarInformaEsState extends State<Tela7EditarInformaEs> {
 
                     // Campo Nome
                     TextField(
+                      controller: nomeController,
                       style: const TextStyle(color: Color(0xFFF0E8D5)),
                       decoration: InputDecoration(
                         labelText: 'Nome',
@@ -203,14 +251,61 @@ class _Tela7EditarInformaEsState extends State<Tela7EditarInformaEs> {
                       ),
                     ),
 
-                    const SizedBox(height: 180),
+                    SizedBox(height: 40),
+                    
+                    // //Campo email
+                    // TextField(
+                    //   style: const TextStyle(color: Color(0xFFF0E8D5)),
+                    //   decoration: InputDecoration(
+                    //     labelText: 'Email',
+                    //     labelStyle: const TextStyle(
+                    //       color: Color(0xBFF0E8D5),
+                    //       fontSize: 16,
+                    //       fontFamily: 'Inter',
+                    //       fontWeight: FontWeight.w500,
+                    //     ),
+                    //     filled: true,
+                    //     fillColor: const Color(0xFF503D68),
+                    //     border: OutlineInputBorder(
+                    //       borderRadius: BorderRadius.circular(10),
+                    //       borderSide: BorderSide.none,
+                    //     ),
+                    //   ),
+                    // ),
+
+                    // SizedBox(height: 40),
+
+                    //Campo Número
+                    TextField(
+                      controller: telefoneController,
+                      style: const TextStyle(color: Color(0xFFF0E8D5)),
+                      decoration: InputDecoration(
+                        labelText: 'Telefone',
+                        labelStyle: const TextStyle(
+                          color: Color(0xBFF0E8D5),
+                          fontSize: 16,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w500,
+                        ),
+                        filled: true,
+                        fillColor: const Color(0xFF503D68),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 150),
 
                     // Botão Atualizar
                     SizedBox(
                       width: 286,
                       height: 73,
-                      child: ElevatedButton(
+                      child: carregando ? const CircularProgressIndicator() :
+                      ElevatedButton(
                         onPressed: () async {
+                          await _atualizarDados();
                           await salvarFotoPerfil();
                           await carregarFotoPerfil();
 
@@ -220,7 +315,6 @@ class _Tela7EditarInformaEsState extends State<Tela7EditarInformaEs> {
                             ),
                           );
 
-                          // TODO: lógica de atualizar
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFFF0E8D5),

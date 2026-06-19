@@ -15,6 +15,33 @@ class Tela3Feed extends StatefulWidget {
 
 class _Tela3FeedState extends State<Tela3Feed> {
 
+  String nomeUsuario = '';
+  String emailUsuario = '';
+  String? fotoPerfilUrl;
+
+  Future<void> carregarDadosUsuario() async {
+
+  final user = supabase.auth.currentUser;
+
+    if (user == null) return;
+
+    final dados = await supabase
+        .from('usuarios')
+        .select('nome, foto_perfil')
+        .eq('id', user.id)
+        .single();
+
+    setState(() {
+
+      nomeUsuario = dados['nome'] ?? '';
+
+      fotoPerfilUrl = dados['foto_perfil'];
+
+      emailUsuario = user.email ?? '';
+
+    });
+  }
+
   bool isSearchClicked = false;
   final TextEditingController _searchController = TextEditingController();
   String searchQuery = '';
@@ -30,6 +57,7 @@ class _Tela3FeedState extends State<Tela3Feed> {
   @override
   void initState() {
     super.initState();
+    carregarDadosUsuario();
     filteredResults = List.from(searchResults);
     }
 
@@ -61,6 +89,7 @@ class _Tela3FeedState extends State<Tela3Feed> {
 
 
         appBar: AppBar( //barra de cima
+         iconTheme: IconThemeData(color: Color.fromARGB(255, 240, 232, 213)),
           backgroundColor: Color.fromARGB(255, 80, 61, 104),
           elevation: 0,
 
@@ -165,14 +194,22 @@ class _Tela3FeedState extends State<Tela3Feed> {
                     alignment: Alignment.topLeft,
                      child:CircleAvatar(
                        radius: 40,
-                       backgroundImage: NetworkImage("https://placehold.co/80x80"),
+                       backgroundImage:
+                        fotoPerfilUrl != null
+                            ? NetworkImage(fotoPerfilUrl!)
+                            : null,
+
+                      child:
+                        fotoPerfilUrl == null
+                            ? Icon(Icons.person)
+                            : null,
                      )
                     ),
 
                     SizedBox(height: 10),
                     
                     Text(
-                      'Nome do Usuário',
+                      nomeUsuario,
                       style: TextStyle(
                         color: Color.fromARGB(255, 240, 232, 213),
                         fontSize: 15,
@@ -182,7 +219,7 @@ class _Tela3FeedState extends State<Tela3Feed> {
                     
 
                     Text(
-                      'Usuario3@outlook.com',
+                      emailUsuario,
                       style: TextStyle(
                         color: Color.fromARGB(255, 240, 232, 213),
                         fontSize: 15,

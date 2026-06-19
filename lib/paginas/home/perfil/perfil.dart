@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:sistema_dvolta/paginas/home/perfil/editar_informacoes/editar_informacoes.dart';
+import 'package:sistema_dvolta/paginas/home/perfil/meus_posts/meus_posts.dart';
 
 
 class Tela5Perfil extends StatefulWidget {
@@ -8,6 +10,41 @@ class Tela5Perfil extends StatefulWidget {
 }
 
 class _Tela5PerfilState extends State<Tela5Perfil> {
+  final supabase = Supabase.instance.client;
+  String nomeUsuario = '';
+  String emailUsuario = '';
+  String? fotoPerfilUrl;
+
+  Future<void> carregarDadosUsuario() async {
+
+    final user = supabase.auth.currentUser;
+
+      if (user == null) return;
+
+      final dados = await supabase
+          .from('usuarios')
+          .select('nome, foto_perfil')
+          .eq('id', user.id)
+          .single();
+
+      setState(() {
+
+        nomeUsuario = dados['nome'] ?? '';
+
+        fotoPerfilUrl = dados['foto_perfil'];
+
+        emailUsuario = user.email ?? '';
+
+      });
+    }
+
+    @override
+    void initState() {
+      super.initState();
+      carregarDadosUsuario();
+    }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,14 +75,22 @@ class _Tela5PerfilState extends State<Tela5Perfil> {
               offset: Offset(40,0),
             child: CircleAvatar( //avatar
                                 radius: 90,
-                                backgroundImage: NetworkImage("https://placehold.co/80x80"),
+                                backgroundImage:
+                                  fotoPerfilUrl != null
+                                      ? NetworkImage(fotoPerfilUrl!)
+                                      : null,
+
+                                child:
+                                  fotoPerfilUrl == null
+                                      ? Icon(Icons.person)
+                                      : null,
                               ),
           ),
            SizedBox(height: 10),
            Transform.translate(
               offset: Offset(-60,0),
             child: Text(// texto do nome do usuário
-                                "Nome do usuário",
+                                nomeUsuario,
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
@@ -57,7 +102,7 @@ class _Tela5PerfilState extends State<Tela5Perfil> {
            Transform.translate(
               offset: Offset(-60,0),
             child: Text( //texto do email do usuário
-                                "Usuario3@outlook.com",
+                                emailUsuario,
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
@@ -84,7 +129,8 @@ class _Tela5PerfilState extends State<Tela5Perfil> {
            ),
 
             
-                 Column(            
+                 Column( 
+                  crossAxisAlignment: CrossAxisAlignment.start,           
                   children: [
                     SizedBox(height: 350), // Espaçamento entre o avatar e o nome
 
@@ -96,15 +142,25 @@ class _Tela5PerfilState extends State<Tela5Perfil> {
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFF503D68),
-                        padding: EdgeInsets.only(left: 70, right: 180, top: 20, bottom: 20),
+                        backgroundColor: Colors.transparent,
+                        shadowColor: Colors.transparent,
+                        fixedSize: Size(400, 60),
                       ),
-                      child: Text(
+                      child: Align(alignment: Alignment.centerLeft,
+                      child: Row( mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.edit, color: Color.fromARGB(255, 240, 232, 213), size:20),
+                        SizedBox(width: 8),
+                           Text(
                                 'Editar informações',
                                 style: TextStyle(
                                   fontSize: 16,
                                   color: Color(0xFFF0E8D5),
                                 ),
+                               ),
+                      ]
+                      
+                      )
                       )
                     ),
 
@@ -120,19 +176,29 @@ class _Tela5PerfilState extends State<Tela5Perfil> {
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => Tela7EditarInformaEs()),
+                          MaterialPageRoute(builder: (context) => Tela6meuspost()),
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFF503D68),
-                        padding: EdgeInsets.only(left: 70, right: 240, top: 20, bottom: 20),
+                        backgroundColor: Colors.transparent,
+                        shadowColor: Colors.transparent,
+                        fixedSize: Size(400, 60),
                       ),
-                      child: Text(
-                                'Meus Posts',
+                      child: Align(alignment: Alignment.centerLeft,
+                      child: Row( mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.folder, color: Color.fromARGB(255, 240, 232, 213), size:20),
+                        SizedBox(width: 8),
+                           Text(
+                                'Meus posts',
                                 style: TextStyle(
                                   fontSize: 16,
                                   color: Color(0xFFF0E8D5),
                                 ),
+                               ),
+                      ]
+                      
+                      )
                       )
                     ),
 
@@ -152,15 +218,25 @@ class _Tela5PerfilState extends State<Tela5Perfil> {
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFF503D68),
-                        padding: EdgeInsets.only(left: 70, right: 240, top: 20, bottom: 20),
+                        backgroundColor: Colors.transparent,
+                        shadowColor: Colors.transparent,
+                        fixedSize: Size(400, 60),
                       ),
-                      child: Text(
+                      child: Align(alignment: Alignment.centerLeft,
+                      child: Row( mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.delete, color: Color.fromARGB(255, 240, 232, 213), size:20),
+                        SizedBox(width: 8),
+                           Text(
                                 'Excluir conta',
                                 style: TextStyle(
                                   fontSize: 16,
                                   color: Color(0xFFF0E8D5),
                                 ),
+                               ),
+                      ]
+                      
+                      )
                       )
                     ),
 
@@ -180,15 +256,25 @@ class _Tela5PerfilState extends State<Tela5Perfil> {
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFF503D68),
-                        padding: EdgeInsets.only(left: 50, right: 240, top: 20, bottom: 20),
+                        backgroundColor: Colors.transparent,
+                        shadowColor: Colors.transparent,
+                        fixedSize: Size(400, 60),
                       ),
-                      child: Text(
+                      child: Align(alignment: Alignment.centerLeft,
+                      child: Row( mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.logout, color: Color.fromARGB(255, 240, 232, 213), size:20),
+                        SizedBox(width: 8),
+                           Text(
                                 'Sair da conta',
                                 style: TextStyle(
                                   fontSize: 16,
                                   color: Color(0xFFF0E8D5),
                                 ),
+                               ),
+                      ]
+                      
+                      )
                       )
                     ),
 
