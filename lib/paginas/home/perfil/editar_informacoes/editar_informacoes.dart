@@ -4,7 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class Tela7EditarInformaEs extends StatefulWidget {
-  const Tela7EditarInformaEs({super.key});
+  const Tela7EditarInformaEs({super.key,});
 
   @override
   State<Tela7EditarInformaEs> createState() => _Tela7EditarInformaEsState();
@@ -14,7 +14,7 @@ class _Tela7EditarInformaEsState extends State<Tela7EditarInformaEs> {
   final supabase = Supabase.instance.client;
   final TextEditingController nomeController = TextEditingController();
   //final TextEditingController emailController = TextEditingController();
-  final TextEditingController telefoneController = TextEditingController();
+  final TextEditingController? telefoneController = TextEditingController();
 
   bool carregando = false;
 
@@ -35,7 +35,7 @@ class _Tela7EditarInformaEsState extends State<Tela7EditarInformaEs> {
           .update({
             'nome': nomeController.text.trim(),
             //'email': emailController.text.trim(),
-            'telefone': telefoneController.text.trim(),
+            'telefone': telefoneController?.text.trim(),
           })
           .eq('id', usuarioId); // Atualiza apenas a linha deste usuário
 
@@ -56,7 +56,7 @@ class _Tela7EditarInformaEsState extends State<Tela7EditarInformaEs> {
     // Limpa os controladores quando a tela for fechada
     nomeController.dispose();
     //emailController.dispose();
-    telefoneController.dispose();
+    telefoneController?.dispose();
     super.dispose();
   }
 
@@ -79,10 +79,11 @@ class _Tela7EditarInformaEsState extends State<Tela7EditarInformaEs> {
 
   Future<String> uploadFotoPerfil() async {
 
+    
     final userId = supabase.auth.currentUser!.id;
 
-    final caminho = '$userId.jpg';
-
+    final caminho = '$userId/avatar.jpg';
+    
     await supabase.storage
         .from('avatars')
         .upload(
@@ -93,10 +94,16 @@ class _Tela7EditarInformaEsState extends State<Tela7EditarInformaEs> {
           ),
         );
 
-    return supabase.storage
-        .from('avatars')
-        .getPublicUrl(caminho);
-  }
+    // return supabase.storage
+    //     .from('avatars')
+    //     .getPublicUrl(caminho);
+  final url = supabase.storage
+    .from('avatars')
+    .getPublicUrl(caminho);
+
+   return '$url?v=${DateTime.now().millisecondsSinceEpoch}';
+    
+    }
 
   Future<void> salvarFotoPerfil() async {
 
@@ -117,19 +124,42 @@ class _Tela7EditarInformaEsState extends State<Tela7EditarInformaEs> {
         );
   }
 
-  Future<void> carregarFotoPerfil() async {
+  // Future<void> carregarFotoPerfil() async {
+
+  //   final dados = await supabase
+  //       .from('usuarios')
+  //       .select('foto_perfil')
+  //       .eq(
+  //         'id',
+  //         supabase.auth.currentUser!.id,
+  //       )
+  //       .single();
+
+  //   setState(() {
+  //     fotoPerfilUrl = dados['foto_perfil'];
+  //   });
+  // }
+
+  Future<void> carregarDadosUsuario() async {
+
+    final usuarioId = supabase.auth.currentUser?.id;
+
+    if (usuarioId == null) return;
 
     final dados = await supabase
         .from('usuarios')
-        .select('foto_perfil')
-        .eq(
-          'id',
-          supabase.auth.currentUser!.id,
-        )
+        .select('nome, telefone, foto_perfil')
+        .eq('id', usuarioId)
         .single();
 
     setState(() {
+
+      nomeController.text = dados['nome'] ?? '';
+
+      telefoneController?.text = dados['telefone'] ?? '';
+
       fotoPerfilUrl = dados['foto_perfil'];
+
     });
   }
 
@@ -137,7 +167,8 @@ class _Tela7EditarInformaEsState extends State<Tela7EditarInformaEs> {
   void initState() {
     super.initState();
 
-    carregarFotoPerfil();
+    carregarDadosUsuario();
+    //carregarFotoPerfil();
   }
 
 
@@ -278,6 +309,7 @@ class _Tela7EditarInformaEsState extends State<Tela7EditarInformaEs> {
                     //Campo Número
                     TextField(
                       controller: telefoneController,
+                      keyboardType: TextInputType.number,
                       style: const TextStyle(color: Color(0xFFF0E8D5)),
                       decoration: InputDecoration(
                         labelText: 'Telefone',
@@ -305,9 +337,16 @@ class _Tela7EditarInformaEsState extends State<Tela7EditarInformaEs> {
                       child: carregando ? const CircularProgressIndicator() :
                       ElevatedButton(
                         onPressed: () async {
+                          //await uploadFotoPerfil();
                           await _atualizarDados();
-                          await salvarFotoPerfil();
-                          await carregarFotoPerfil();
+                          //await salvarFotoPerfil();
+                          //await carregarFotoPerfil();
+
+                          if (fotoSelecionada != null) {
+                            await salvarFotoPerfil();
+                            //await carregarFotoPerfil();
+                            await carregarDadosUsuario();
+                          }
 
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(

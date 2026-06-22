@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:sistema_dvolta/paginas/home/perfil/editar_informacoes/editar_informacoes.dart';
 import 'package:sistema_dvolta/paginas/home/perfil/meus_posts/meus_posts.dart';
+import 'package:sistema_dvolta/paginas/login/main.dart';
 
 
 class Tela5Perfil extends StatefulWidget {
@@ -36,6 +37,42 @@ class _Tela5PerfilState extends State<Tela5Perfil> {
         emailUsuario = user.email ?? '';
 
       });
+    }
+
+    Future<void> excluirConta() async {
+
+      try {
+
+        final userId =
+            supabase.auth.currentUser!.id;
+
+        await supabase
+            .from('posts')
+            .delete()
+            .eq('usuario_id', userId);
+
+        await supabase
+            .from('usuarios')
+            .delete()
+            .eq('id', userId);
+
+        await supabase.auth.signOut();
+
+        if (!mounted) return;
+
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (_) => Tela1Login(),
+          ),
+          (route) => false,
+        );
+
+      } catch (e) {
+
+        print(e);
+
+      }
     }
 
     @override
@@ -136,6 +173,7 @@ class _Tela5PerfilState extends State<Tela5Perfil> {
 
                     ElevatedButton(
                       onPressed: () {
+                        print("aqui é o teste A");
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => Tela7EditarInformaEs()),
@@ -202,43 +240,99 @@ class _Tela5PerfilState extends State<Tela5Perfil> {
                       )
                     ),
 
-                    Divider(
-                      height: 40,
-                      thickness: 1,
-                      color: const Color(0xFF24496B),
-                      indent: 20,
-                      endIndent: 20,
-                    ),
+                    // Divider(
+                    //   height: 40,
+                    //   thickness: 1,
+                    //   color: const Color(0xFF24496B),
+                    //   indent: 20,
+                    //   endIndent: 20,
+                    // ),
 
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => Tela7EditarInformaEs()),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.transparent,
-                        shadowColor: Colors.transparent,
-                        fixedSize: Size(400, 60),
-                      ),
-                      child: Align(alignment: Alignment.centerLeft,
-                      child: Row( mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.delete, color: Color.fromARGB(255, 240, 232, 213), size:20),
-                        SizedBox(width: 8),
-                           Text(
-                                'Excluir conta',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Color(0xFFF0E8D5),
-                                ),
-                               ),
-                      ]
+                    // ElevatedButton(
+                    //   onPressed: () {
+
+                    //     showDialog(
+
+                    //       context: context,
+
+                    //       builder: (context) {
+
+                    //         return AlertDialog(
+
+                    //           backgroundColor:
+                    //               const Color.fromARGB(255, 80, 61, 104),
+
+                    //           title: const Text(
+                    //             'Excluir conta',
+                    //             style: TextStyle(
+                    //               color: Color.fromARGB(255, 240, 232, 213),
+                    //             ),
+                    //           ),
+
+                    //           content: const Text(
+                    //             'Tem certeza que deseja excluir sua conta? Todos os seus posts serão apagados.',
+                    //             style: TextStyle(
+                    //               color: Color.fromARGB(255, 240, 232, 213),
+                    //             ),
+                    //           ),
+
+                    //           actions: [
+
+                    //             TextButton(
+                    //               onPressed: () {
+                    //                 Navigator.pop(context);
+                    //               },
+                    //               child: const Text(
+                    //                 'Cancelar',
+                    //                 style: TextStyle(
+                    //                   color: Color.fromARGB(255, 240, 232, 213),
+                    //                 ),
+                    //               ),
+                    //             ),
+
+                    //             TextButton(
+                    //               onPressed: () async {
+
+                    //                 Navigator.pop(context);
+
+                    //                 await excluirConta();
+
+                    //               },
+                    //               child: const Text(
+                    //                 'Excluir',
+                    //                 style: TextStyle(
+                    //                   color: Colors.red,
+                    //                 ),
+                    //               ),
+                    //             ),
+
+                    //           ],
+                    //         );
+                    //       },
+                    //     );
+                    //   },
+                    //   style: ElevatedButton.styleFrom(
+                    //     backgroundColor: Colors.transparent,
+                    //     shadowColor: Colors.transparent,
+                    //     fixedSize: Size(400, 60),
+                    //   ),
+                    //   child: Align(alignment: Alignment.centerLeft,
+                    //   child: Row( mainAxisSize: MainAxisSize.min,
+                    //   children: [
+                    //     Icon(Icons.delete, color: Color.fromARGB(255, 240, 232, 213), size:20),
+                    //     SizedBox(width: 8),
+                    //        Text(
+                    //             'Excluir conta',
+                    //             style: TextStyle(
+                    //               fontSize: 16,
+                    //               color: Color(0xFFF0E8D5),
+                    //             ),
+                    //            ),
+                    //   ]
                       
-                      )
-                      )
-                    ),
+                    //   )
+                    //   )
+                    // ),
 
                     Divider(
                       height: 40,
@@ -249,10 +343,11 @@ class _Tela5PerfilState extends State<Tela5Perfil> {
                     ),
 
                     ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
+                        await supabase.auth.signOut();
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => Tela7EditarInformaEs()),
+                          MaterialPageRoute(builder: (context) => Tela1Login()),
                         );
                       },
                       style: ElevatedButton.styleFrom(

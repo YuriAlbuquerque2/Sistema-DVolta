@@ -2,23 +2,86 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
-
+import 'package:sistema_dvolta/paginas/home/perfil/meus_posts/meus_posts.dart';
 import 'package:sistema_dvolta/paginas/home/home.dart';
 
 class Tela4CriarPost  extends StatefulWidget {
-  const Tela4CriarPost({super.key});
+
+  final Map<String, dynamic>? postEditar;
+
+  const Tela4CriarPost({
+    super.key,
+    this.postEditar,
+  });
 
   @override
   State<Tela4CriarPost> createState() => _Tela4CriarPostState();
 }
 
 class _Tela4CriarPostState extends State<Tela4CriarPost> {
+  bool get editando =>
+  widget.postEditar != null;
+  String telefoneUsuario = '';
+
   final supabase = Supabase.instance.client;
   final TextEditingController tituloController = TextEditingController();
   final TextEditingController descricaoController = TextEditingController();
   final TextEditingController localController = TextEditingController();
+  final TextEditingController? telefoneController = TextEditingController();
+  final TextEditingController? instaController = TextEditingController();
 
   final ImagePicker picker = ImagePicker();
+
+  Future<void> carregarTelefoneUsuario() async {
+
+    final user = supabase.auth.currentUser;
+
+    if (user == null) return;
+
+    final dados = await supabase
+        .from('usuarios')
+        .select('telefone')
+        .eq('id', user.id)
+        .single();
+
+    telefoneUsuario = dados['telefone'] ?? '';
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+      carregarTelefoneUsuario();
+
+      if (editando) {
+
+        final post = widget.postEditar!;
+
+        tituloController.text =
+            post['titulo'] ?? '';
+
+        descricaoController.text =
+            post['descricao'] ?? '';
+
+        localController.text =
+            post['local'] ?? '';
+
+        tipoSelecionado =
+            post['tipo_post'] ?? 'Achado';
+
+        whatsapp =
+            post['whatsapp'] ?? false;
+
+        instagram =
+            post['instagram'] ?? false;
+
+        telefoneController?.text =
+            post['wzap_numero'] ?? '';
+
+        instaController?.text =
+            post['usuario_insta'] ?? '';
+      }
+  }
 
   List<File> imagensSelecionadas = [];
 
@@ -72,6 +135,17 @@ class _Tela4CriarPostState extends State<Tela4CriarPost> {
     return urls;
   }
 
+  @override
+  void dispose() {
+    // Limpa os controladores quando a tela for fechada
+    tituloController.dispose();
+    telefoneController?.dispose();
+    instaController?.dispose();
+    descricaoController.dispose();
+    localController.dispose();
+    super.dispose();
+  }
+
   String tipoSelecionado = 'Achado';
 
   final List<String> tipos = [
@@ -80,7 +154,7 @@ class _Tela4CriarPostState extends State<Tela4CriarPost> {
   ];
 
   bool whatsapp = false;
-  bool telegram = false;
+  bool instagram = false;
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +163,11 @@ class _Tela4CriarPostState extends State<Tela4CriarPost> {
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Color.fromARGB(255, 80, 61, 104),
-        title: const Text('Post'),
+        title: Text(
+          editando
+              ? 'Editar Post'
+              : 'Criar Post',
+        ),
         elevation: 0,
         centerTitle: true,
         titleTextStyle: TextStyle(
@@ -366,14 +444,14 @@ class _Tela4CriarPostState extends State<Tela4CriarPost> {
 
                                   SizedBox(width: 1),
 
-                                  Expanded(
-                                    child: Text(
-                                      "Cuidado com as imagens colocadas...",
-                                      style: TextStyle(
-                                        color: Color.fromARGB(255, 240, 232, 213),
-                                      ),
-                                    ),
-                                  ),
+                                  // Expanded(
+                                  //   child: Text(
+                                  //     "Cuidado com as imagens colocadas...",
+                                  //     style: TextStyle(
+                                  //       color: Color.fromARGB(255, 240, 232, 213),
+                                  //     ),
+                                  //   ),
+                                  // ),
                                 ],
                               ),
 
@@ -434,9 +512,24 @@ class _Tela4CriarPostState extends State<Tela4CriarPost> {
                               visualDensity: VisualDensity.compact,
                               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               onChanged: (bool? value) {
-                                setState((){
+
+                                setState(() {
+
                                   whatsapp = value ?? false;
+
+                                  if (whatsapp && telefoneController!.text.isEmpty) {
+
+                                    telefoneController?.text =
+                                        telefoneUsuario;
+
+                                  } else {
+
+                                    telefoneController?.clear();
+
+                                  }
+
                                 });
+
                               },
                               checkColor: Color.fromARGB(255, 80, 61, 104),
                               activeColor: Color.fromARGB(255, 240, 232, 213),
@@ -453,6 +546,45 @@ class _Tela4CriarPostState extends State<Tela4CriarPost> {
                               fontSize: 18,
                               ),
                             ),
+                            
+                            SizedBox(width: 5),
+                           Expanded(
+                            child: Visibility(
+                              visible: whatsapp,
+                              child: TextField(
+                                controller: telefoneController,
+                                keyboardType: TextInputType.number,
+                        style: TextStyle(
+                          color: Color.fromARGB(255, 240, 232, 213),
+                        ),
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Color.fromARGB(255, 80, 61, 104),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(
+                              color: const Color.fromARGB(255, 80, 61, 104),
+                            ),
+                          ),
+
+                          focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(
+                            color: const Color.fromARGB(255, 240, 232, 213),
+                          ),
+                        ),
+
+                          hintText: 'Número de contato',
+                          hintStyle: TextStyle(
+                            color: Color.fromARGB(191, 240, 232, 213),
+                          ),
+                        ),
+                            )
+                              )
+                           )
+                             
+
+
                           ],
                         ),
                       ),
@@ -462,12 +594,12 @@ class _Tela4CriarPostState extends State<Tela4CriarPost> {
                         child: Row(
                           children: [
                             Checkbox(
-                              value: telegram, 
+                              value: instagram, 
                               visualDensity: VisualDensity.compact,
                               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               onChanged: (bool? value) {
                                 setState((){
-                                  telegram = value ?? false;
+                                  instagram = value ?? false;
                                 });
                               },
                               checkColor: Color.fromARGB(255, 80, 61, 104),
@@ -479,12 +611,46 @@ class _Tela4CriarPostState extends State<Tela4CriarPost> {
                             ),
                             SizedBox(width: 1),
                             const Text(
-                              "Telegram",
+                              "Instagram",
                               style: TextStyle(
                               color: Color.fromARGB(255, 240, 232, 213),
                               fontSize: 18,
                               ),
                             ),
+                            SizedBox(width: 5),
+                           Expanded(
+                            child: Visibility(
+                              visible: instagram,
+                              child: TextField(
+                                controller: instaController,
+                        style: TextStyle(
+                          color: Color.fromARGB(255, 240, 232, 213),
+                        ),
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Color.fromARGB(255, 80, 61, 104),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(
+                              color: const Color.fromARGB(255, 80, 61, 104),
+                            ),
+                          ),
+
+                          focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(
+                            color: const Color.fromARGB(255, 240, 232, 213),
+                          ),
+                        ),
+
+                          hintText: '@ do Instagram',
+                          hintStyle: TextStyle(
+                            color: Color.fromARGB(191, 240, 232, 213),
+                          ),
+                        ),
+                            )
+                              )
+                           )
                           ],
                         ),
                       ),
@@ -522,50 +688,117 @@ class _Tela4CriarPostState extends State<Tela4CriarPost> {
                               return;
                             }
 
-                            try {
-                              final postCriado =
-                                await supabase
-                                  .from('posts')
-                                  .insert({
-                                    'titulo': tituloController.text,
-                                    'descricao': descricaoController.text,
-                                    'tipo_post': tipoSelecionado,
-                                    'local': localController.text,
-                                    'whatsapp': whatsapp,
-                                    'telegram': telegram,
-                                    'usuario_id':
-                                        supabase.auth.currentUser!.id,
-                                  })
-                                  .select()
-                                  .single();
+                            if (!whatsapp && !instagram) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text("Escolha uma forma de contato."),
+                                ),
+                              );
+                              return;
+                            }
 
-                                  final postId = postCriado['id'];
+                            if (whatsapp && telefoneController!.text.trim().isEmpty){
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text("Informe seu número do WhatsApp para contato."),
+                                ),
+                              );
+                              return;
+                            }
 
-                                  final urls =
-                                    await uploadImagensPost();
+                            if (instagram && instaController!.text.trim().isEmpty){
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text("Informe seu usuário do Instagram para contato."),
+                                ),
+                              );
+                              return;
+                            }
 
-                                    for (int i = 0; i < urls.length; i++) {
+                            if (whatsapp || instagram) {
+                              try {
+                                if (editando) {
+                                   await supabase
+                                      .from('posts')
+                                      .update({
 
-                                      await supabase
-                                          .from('post_imagens')
-                                          .insert({
-                                            'post_id': postId,
-                                            'url': urls[i],
-                                            'ordem': i + 1,
-                                          });
-                                    }
-                              } catch (e) {
-                                  print(e);
-                                }
+                                        'titulo': tituloController.text,
 
-                                print(supabase.auth.currentUser?.id);
+                                        'descricao': descricaoController.text,
 
+                                        'tipo_post': tipoSelecionado,
+
+                                        'local': localController.text,
+
+                                        'whatsapp': whatsapp,
+
+                                        'instagram': instagram,
+
+                                        'wzap_numero':
+                                            telefoneController!.text,
+
+                                        'usuario_insta':
+                                            instaController!.text,
+
+                                      })
+                                      .eq(
+                                        'id',
+                                        widget.postEditar!['id'],
+                                      );
+                                } else {
+                                final postCriado =
+                                  await supabase
+                                    .from('posts')
+                                    .insert({
+                                      'titulo': tituloController.text,
+                                      'descricao': descricaoController.text,
+                                      'tipo_post': tipoSelecionado,
+                                      'local': localController.text,
+                                      'whatsapp': whatsapp,
+                                      'instagram': instagram,
+                                      'usuario_id': supabase.auth.currentUser!.id,
+                                      'wzap_numero': telefoneController!.text,
+                                      'usuario_insta': instaController!.text,
+                                    })
+                                    .select()
+                                    .single();
                                 
 
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => Tela3Feed())
-                            );
+                                    final postId = postCriado['id'];
+                                
+
+                                    final urls =
+                                      await uploadImagensPost();
+
+                                      for (int i = 0; i < urls.length; i++) {
+
+                                        await supabase
+                                            .from('post_imagens')
+                                            .insert({
+                                              'post_id': postId,
+                                              'url': urls[i],
+                                              'ordem': i + 1,
+                                            });
+                                      }
+                                }
+                                } catch (e) {
+                                    print(e);
+                                  }
+
+                              print(supabase.auth.currentUser?.id);           
+
+                              if (editando) {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(builder: (context) => Tela6meuspost())
+                              );
+                              } else {
+                                Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(builder: (context) => Tela3Feed())
+                              );
+                              }
+                            }
                           }, 
                           style: ElevatedButton.styleFrom(
                             fixedSize: Size(250, 60),
@@ -574,11 +807,14 @@ class _Tela4CriarPostState extends State<Tela4CriarPost> {
                           ),
                           child: Text(
                             textAlign: TextAlign.center,
-                            "Enviar",
+                            editando
+                            ? "Salvar"
+                            : "Enviar",
                             style: TextStyle(
                               fontSize: 20,
                             ),
                           ),
+                          
                         ),
                       ),
                     
@@ -590,8 +826,5 @@ class _Tela4CriarPostState extends State<Tela4CriarPost> {
         ),
     
     );
-
-      
-
   }
 }
